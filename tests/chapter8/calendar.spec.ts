@@ -16,7 +16,7 @@ test('How to handle calendars', async ({ page }) => {
     await page.locator(".react-calendar__year-view__months__month").nth(Number(monthNumber) - 1).click();;
     //choose DAY
     await page.locator(".react-calendar__tile").nth(Number(dayNumber)).click();
-    await page.screenshot({ path: 'calendar.png' });
+    await page.screenshot({ path: 'test-results/calendar.png' });
     const inputs = page.locator('.react-date-picker__inputGroup__input')
 
     for (let i = 0; i < expectedList.length; i++) {

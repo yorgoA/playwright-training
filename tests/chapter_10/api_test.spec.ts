@@ -1,41 +1,45 @@
-import {test,expect,request} from '@playwright/test';
+import { expect, request, test } from '@playwright/test';
 import { APIUtils } from '../utils/ApiUtils';
-const loginPayload = {userEmail:"REDACTED_EMAIL@example.com",userPassword:"Test1234$"}
-const orderPayload = {orders:[{country:"Cuba",productOrderedId:"68a961719320a140fe1ca57c"}]}
-let token: any;
-let orderID: any;
-test.beforeAll(async () => {
-    // Login API call
-     const apiContext = await request.newContext();
-     const apiUtils = new APIUtils(apiContext,loginPayload,orderPayload);
-    token = await apiUtils.getToken();
-    orderID = await apiUtils.createOrder()
 
+const loginPayload = {
+  userEmail: process.env.DEMO_USER_EMAIL ?? '',
+  userPassword: process.env.DEMO_USER_PASSWORD ?? '',
+};
+
+let token: string;
+let orderID: string;
+
+test.beforeAll(async () => {
+  const apiContext = await request.newContext();
+  const apiUtils = new APIUtils(apiContext, loginPayload);
+
+  token = await apiUtils.getToken();
+  orderID = await apiUtils.createOrder(token, 'Cuba');
 });
 
+test('order placed through the API shows up in the UI order history', async ({ page }) => {
+  await page.addInitScript((value) => {
+    window.localStorage.setItem('token', value);
+  }, token);
 
-test('Api login', async ({ page }) => {
-page.addInitScript(value => {
-    window.localStorage.setItem('token',value); 
-},token
-);
-    await page.goto("https://rahulshettyacademy.com/client");
+  await page.goto('https://rahulshettyacademy.com/client');
+  await page.locator("button[routerlink*='myorders']").click();
+  await page.locator('tbody').waitFor();
 
- await page.locator("button[routerlink*='myorders']").click();
- await page.locator("tbody").waitFor();
-const rows = await page.locator("tbody tr");
- 
- 
-for(let i =0; i<await rows.count(); ++i)
-{
-   const rowOrderId =await rows.nth(i).locator("th").textContent();
-   if (orderID.includes(rowOrderId))
-   {
-       await rows.nth(i).locator("button").first().click();
-       break;
-   }
-}
-const orderIdDetails =await page.locator(".col-text").textContent();
-//await page.pause();
-expect(orderID.includes(orderIdDetails)).toBeTruthy();
+  const rows = page.locator('tbody tr');
+  let matched = false;
+
+  for (let i = 0; i < (await rows.count()); ++i) {
+    const rowOrderId = await rows.nth(i).locator('th').textContent();
+    if (rowOrderId && orderID.includes(rowOrderId)) {
+      await rows.nth(i).locator('button').first().click();
+      matched = true;
+      break;
+    }
+  }
+
+  expect(matched).toBeTruthy();
+
+  const orderIdDetails = await page.locator('.col-text').textContent();
+  expect(orderIdDetails && orderID.includes(orderIdDetails)).toBeTruthy();
 });

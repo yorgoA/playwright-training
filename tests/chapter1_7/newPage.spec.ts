@@ -1,21 +1,21 @@
 import { expect, test } from '@playwright/test';
-test("Child window hanlding",async({browser})=>
-{
-const context = await browser.newContext();
-const page = await context.newPage();
-const userName = page.locator("#username")
-const signInBtn = page.locator("#signInBtn")
-const Link = page.locator(".blinkingText")
-await page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-const [newPage] = await Promise.all(
-    [
-context.waitForEvent("page"),
-await Link.click(),
-    ]
-)
-const text = await newPage.locator(".im-para.red").textContent()
-const domainName = text?.split("@")[1].split(" ")[0]
-console.log(text)
-console.log(domainName)
-await userName.fill(domainName ?? "not found")
-}); 
+
+test('extracts a value from a popup window and feeds it back into the parent page', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  const userName = page.locator('#username');
+  const link = page.locator('.blinkingText').first();
+
+  await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
+
+  const [popup] = await Promise.all([context.waitForEvent('page'), link.click()]);
+  await popup.waitForLoadState();
+
+  const text = await popup.locator('.im-para.red').textContent();
+  const domainName = text?.split('@')[1].split(' ')[0];
+
+  await userName.fill(domainName ?? 'not found');
+
+  await expect(userName).toHaveValue(domainName ?? 'not found');
+});

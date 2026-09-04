@@ -1,40 +1,46 @@
-# 📘 Playwright Learning Journey
+# Playwright Test Automation
 
-This repository documents my learning path as I began studying Playwright through the course:
+A collection of Playwright end-to-end and API tests written in TypeScript, built while working through automation testing fundamentals and progressively applying them to real, live web applications (an Angular e-commerce demo, a login practice site, iframes, calendars, and REST APIs).
 
-**_“Playwright JS/TS Automation Testing from Scratch & Framework”_**  
-by **Rahul Shetty Academy**
+## What's covered
 
----
+- **UI automation** — forms, locators (`getByRole`, `getByLabel`, `getByPlaceholder`), navigation, popups/child windows, iframes, and hidden/dynamic elements
+- **End-to-end flows** — user registration, login, adding a product to cart, checkout, and verifying the resulting order in order history
+- **API testing** — calling REST endpoints directly with `request.newContext()`, and mixing API setup with UI verification (e.g. placing an order via the API and confirming it in the UI)
+- **Test data hygiene** — credentials are read from environment variables rather than hardcoded, and tests that create data (like registration) generate unique values so re-runs never collide with previous ones
+- **CI** — the suite runs headless on every push/PR via GitHub Actions (see [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml))
 
-## 🚀 What I Learned
+## Project structure
 
-### ✅ JavaScript & TypeScript Essentials  
-- Learned the JavaScript and TypeScript fundamentals required for Playwright automation testing.
+```
+tests/
+├── chapter1_7/    # Core UI automation: forms, navigation, registration, checkout, popups
+├── chapter8/      # Advanced locators, date pickers/calendars
+├── chapter9/      # Hidden elements, dialogs, and iframes
+├── chapter_10/    # API + UI hybrid: create data via API, verify in the UI
+├── chapter_11/    # Pure API testing (no browser)
+└── utils/         # Shared helpers (e.g. ApiUtils for auth/order API calls)
+js_training/       # Standalone JavaScript exercises (array methods, etc.)
+```
 
-### 🌐 Web Automation with Playwright  
-- Understood how to automate web applications using Playwright on real, live websites.
-- Gained comprehensive knowledge of all Playwright methods and their usage with practical examples.
+## Getting started
 
-### 🔄 Smart Automation with API Integrations  
-- Learned how to make API calls within UI automation tests to enhance efficiency and reliability.
-- Understood how to intercept network/API requests and responses in Playwright.
+```bash
+npm install
+npx playwright install --with-deps
+cp .env.example .env   # fill in a real login for the demo site
+npm test
+```
 
-### 🛠️ Playwright Tools & Debugging  
-- Got familiar with the Playwright Inspector tool, Trace Viewer, and Codegen (record & playback).
-- Explored Playwright AI Agents, MCP Servers, and GitHub Copilot in VS Code with practical examples.
+Other useful scripts:
 
-### 🧪 Framework Development  
-- Developed a Playwright + Cucumber BDD framework from scratch following best practices.
-- Built an end-to-end Mocha test automation framework using Playwright.
-  
-### 📱 Advanced Testing  
-- Gained understanding of visual testing techniques.
-- Performed mobile device emulation using Playwright.
-- Learned how to run Playwright tests in CI/CD pipelines and inside Docker containers.
+```bash
+npm run test:headed   # run with a visible browser
+npm run test:debug    # step through with the Playwright inspector
+npm run report        # open the last HTML report
+npm run typecheck     # type-check the project with tsc
+```
 
----
+## Notes
 
-## 🎯 Purpose of This Repository
-This repository serves as my personal workspace for practicing Playwright automation, exploring examples from the course, and building complete testing frameworks as part of my learning journey.
-
+Tests run against a public practice site ([rahulshettyacademy.com](https://rahulshettyacademy.com)), so a couple of tests read expected values straight off the page (e.g. dynamically-generated demo credentials) instead of hardcoding them, so they keep passing as the site's content changes.

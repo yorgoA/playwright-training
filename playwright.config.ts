@@ -1,21 +1,30 @@
+import 'dotenv/config';
 import { defineConfig, devices } from '@playwright/test';
-import { trace } from 'console';
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const config = ({
+export default defineConfig({
   testDir: './tests',
-  timeout: 10 * 1000, //timeout for all the tests
+  timeout: 30 * 1000,
   expect: {
-    timeout: 5000 //timeout for each expect assertion
+    timeout: 5000,
   },
-use: {
-  browserName: 'chromium',
-  headless: false,
-screenshot: 'only-on-failure',
-trace: 'retain-on-failure',
-
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  reporter: [['html', { open: 'never' }], ['list']],
+  use: {
+    baseURL: 'https://rahulshettyacademy.com',
+    headless: true,
+    screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
   },
-  reporter: [['html',]],
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
 });
-module.exports = config;

@@ -1,15 +1,27 @@
 {
-  "name": "playwrightautomation",
+  "name": "playwright-training",
   "version": "1.0.0",
-  "description": "",
-  "main": "basics.js",
-  "scripts": {},
-  "keywords": [],
+  "description": "Playwright automation testing examples covering UI, API, and end-to-end scenarios in TypeScript",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.56.1",
-    "@types/node": "^24.9.2"
+    "@types/node": "^24.9.2",
+    "dotenv": "^17.4.2",
+    "typescript": "^7.0.2"
   }
 }
