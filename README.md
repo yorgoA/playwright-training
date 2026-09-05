@@ -8,7 +8,7 @@ A collection of Playwright end-to-end and API tests written in TypeScript, built
 - **End-to-end flows** — user registration, login, adding a product to cart, checkout, and verifying the resulting order in order history
 - **API testing** — calling REST endpoints directly with `request.newContext()`, and mixing API setup with UI verification (e.g. placing an order via the API and confirming it in the UI)
 - **Test data hygiene** — credentials are read from environment variables rather than hardcoded, and tests that create data (like registration) generate unique values so re-runs never collide with previous ones
-- **CI** — the suite runs headless on every push/PR via GitHub Actions (see [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml))
+- **CI** — the suite runs headless on every push/PR via GitHub Actions (see [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml)). A few tests log in against an existing account on the practice site, so CI needs `DEMO_USER_EMAIL` / `DEMO_USER_PASSWORD` configured as [repository secrets](../../settings/secrets/actions) with the same values as your local `.env` — they're not committed for the same reason `.env` isn't.
 
 ## Project structure
 
